@@ -14,7 +14,7 @@ import { useStateContext } from '../context/ContextProvider';
 const NavButton = ({ title, customFun, icon, color, dotColor }) => (
   <TooltipComponent content={title}>
     <button className='relative text-xl roudend full p-3 hover:bg-light-gray' style={{ color }} type="button" onClick={customFun}>
-      <span className='absolute inline-flex rounded-full h-2 w-2 right-2 top-2' style={{ background: dotColor }}>{icon}</span>
+      <span className='absolute inline-flex rounded-full h-2 w-2 right-2 top-2' style={{ background: dotColor }} />{icon}
     </button>
   </TooltipComponent>
 
@@ -22,7 +22,25 @@ const NavButton = ({ title, customFun, icon, color, dotColor }) => (
 )
 
 const Navbar = () => {
-  const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick } = useStateContext()
+  const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick, screenSize, setScreenSize } = useStateContext()
+  useEffect(() => {
+
+    const handleResize = () => setScreenSize(window.innerWidth)
+
+    window.addEventListener('resize', handleResize)
+
+    handleResize()
+    return () => window.addEventListener('resize', handleResize)
+  }, [])
+  useEffect(() => {
+    if (screenSize <= 900) {
+      setActiveMenu(false)
+    } else {
+
+      setActiveMenu(true)
+    }
+  }, [screenSize])
+
   return (
     <div className="flex justify-between p-2 md:mx-6 relative">
       <NavButton icon={<AiOutlineMenu />} color="blue" title="Menu" customFun={() => setActiveMenu(!activeMenu)} />
